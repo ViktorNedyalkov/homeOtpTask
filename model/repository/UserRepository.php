@@ -35,7 +35,6 @@ class UserRepository extends AbstractRepository
 
             // make insertion of verification code
             $verificationRepository = new VerificationRepository();
-
             $verificationRepository->insertNewVerificationCode($user, $verificationCode);
             $this->commitTransaction();
 

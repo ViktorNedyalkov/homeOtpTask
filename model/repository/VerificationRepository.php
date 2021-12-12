@@ -31,6 +31,9 @@ class VerificationRepository extends AbstractRepository
 
                 $this->deactivateAllCodesForUser($user);
 
+                $smsRepository = new SMSRepository();
+                $smsRepository->sendSMS($user->getPhone(), $verificationCode);
+
                 $this->executeInsert($query, $bindParams);
 
                 $this->commitTransaction();
@@ -38,6 +41,9 @@ class VerificationRepository extends AbstractRepository
 
                 // Done like this because this function gets called in other transactions during the registration
                 $this->deactivateAllCodesForUser($user);
+
+                $smsRepository = new SMSRepository();
+                $smsRepository->sendSMS($user->getPhone(), $verificationCode);
 
                 $this->executeInsert($query, $bindParams);
             }

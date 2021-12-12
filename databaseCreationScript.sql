@@ -1,8 +1,24 @@
--- -----------------------------------------------------
+--------------------------------
 -- Schema otptask
 -- -----------------------------------------------------
 CREATE SCHEMA IF NOT EXISTS `otptask` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci ;
 USE `otptask` ;
+
+-- -----------------------------------------------------
+-- Table `otptask`.`sms`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `otptask`.`sms` (
+    `id` INT NOT NULL AUTO_INCREMENT,
+    `phone_number` VARCHAR(45) NULL DEFAULT NULL,
+    `sms_code` VARCHAR(45) NULL DEFAULT NULL,
+    `sent_date` VARCHAR(45) NULL DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    INDEX `phone_nubmer_index` (`phone_number` ASC) VISIBLE,
+    INDEX `sms_code_index` (`sms_code` ASC) VISIBLE)
+    ENGINE = InnoDB
+    DEFAULT CHARACTER SET = utf8mb4
+    COLLATE = utf8mb4_0900_ai_ci;
+
 
 -- -----------------------------------------------------
 -- Table `otptask`.`users`
@@ -13,7 +29,9 @@ CREATE TABLE IF NOT EXISTS `otptask`.`users` (
     `password` VARCHAR(512) NULL DEFAULT NULL,
     `validated` TINYINT(1) NULL DEFAULT NULL,
     `phone` VARCHAR(255) NULL DEFAULT NULL,
-    PRIMARY KEY (`id`))
+    PRIMARY KEY (`id`),
+    INDEX `email_index` (`email` ASC) VISIBLE,
+    INDEX `phone_index` (`phone` ASC) VISIBLE)
     ENGINE = InnoDB
     AUTO_INCREMENT = 31
     DEFAULT CHARACTER SET = utf8mb4
@@ -31,6 +49,7 @@ CREATE TABLE IF NOT EXISTS `otptask`.`users_verification_codes` (
     `active` TINYINT NULL DEFAULT NULL,
     PRIMARY KEY (`id`),
     INDEX `user_id_fk_idx` (`user_id` ASC) VISIBLE,
+    INDEX `verification_code_idx` (`verification_code` ASC) VISIBLE,
     CONSTRAINT `user_id_fk`
     FOREIGN KEY (`user_id`)
     REFERENCES `otptask`.`users` (`id`))

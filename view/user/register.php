@@ -1,6 +1,6 @@
 <?php
 //Check for Session
-require_once "../../utility/session_main.php";
+//require_once "../../utility/session_main.php";
 ?>
 
 <!doctype html>
