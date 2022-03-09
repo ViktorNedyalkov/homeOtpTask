@@ -44,6 +44,8 @@ class UserRepository extends AbstractRepository
         } catch (PDOException $e) {
             $this->rollbackTransaction();
             $message = date("Y-m-d H:i:s") . " " . $_SERVER['SCRIPT_NAME'] . " $e\n";
+            var_dump($message);
+            die();
             error_log($message, 3, '../../errors.log');
             header("Location: ../../view/error/error_500.php");
             die();

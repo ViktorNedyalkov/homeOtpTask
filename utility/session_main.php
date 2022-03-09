@@ -3,12 +3,8 @@
 if (session_status() == PHP_SESSION_NONE) {
 
     session_start();
-}
-//var_dump($_SESSION);die();
-//session_destroy();
-//var_dump(session_status());die();
-// Check if user have session (if user is logged)
-if (isset($_SESSION['userId'])) {
+    
+} else if (isset($_SESSION['userId'])) { // Check if user have session (if user is logged)
     if ($_SESSION['userValidated'] == true) {
         header('Location: ../../view/main/index.php');
         die();

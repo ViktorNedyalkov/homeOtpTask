@@ -1,10 +1,11 @@
 <?php
 namespace controller\user;
 
+use controller\AbstractController;
 use model\repository\UserRepository;
 use model\User;
 
-class UserController
+class UserController extends AbstractController
 {
     public function registerUser($email, $password, $password2, $mobilePhone)
     {
@@ -17,27 +18,24 @@ class UserController
             // check if the phone is given in the format of +359
         } else {
             //Locate to error page Wrong Mobile Number
-            header("Location: ../../view/user/register.php?errorMN");
-            die();
+            exit(header("Location: " . $this->getPathViewRegister() . "?errorMN"));
+        
         }
 
         if (!(filter_var($email, FILTER_VALIDATE_EMAIL) && strlen($email) > 3 && strlen($email) < 254)) {
             //Locate to error Register Page
-            header("Location: ../../view/user/register.php?errorEMAIL");
-            die();
+            exit(header("Location: " . $this->getPathViewRegister() . "?errorEMAIL"));
         }
 
 
         if (!(strlen($password) >= 4 && strlen($password) < 20 && strlen($password2) >= 4 && strlen($password2) < 20)) {
             //Locate to error page Wrong Password length
-            header("Location: ../../view/user/register.php?errorPassSyntax");
-            die();
+            exit(header("Location: " . $this->getPathViewRegister() . "?errorPassSyntax"));
         }
 
         if (!($password == $password2)) {
             //Locate to error page Wrong Password match
-            header("Location: ../../view/user/register.php?errorPassMatch");
-            die();
+            exit(header("Location: " . $this->getPathViewRegister() . "?errorPassMatch"));
         }
         try {
 
@@ -48,7 +46,7 @@ class UserController
             if ($userRepository->checkUserExists($user)) {
 
                 //Locate to error Register Page
-                header("Location: ../../view/user/register.php?errorEmail");
+                exit(header("Location: " . $this->getPathViewRegister() . "?errorEmail"));
             } else {
                 $verificationCode = sprintf("%06d", mt_rand(1, 999999));
                 $user = $userRepository->registerUser($user, $verificationCode);
@@ -59,15 +57,14 @@ class UserController
                 $_SESSION['userId'] = $user->getId();
                 $_SESSION['userValidated'] = $user->getValidated();
 
-                header("Location: ../../view/user/verification.php");
+                exit(header("Location: " . $this->getPathViewVerification()));
 
             }
-            die();
 
         } catch (\Exception $e) {
             $message = date("Y-m-d H:i:s") . " " . $_SERVER['SCRIPT_NAME'] . " $e\n";
-            error_log($message, 3, '../../errors.log');
-            header("Location: ../../view/error/error_500.php");
+            error_log($message, 3, $this->getPathErrorLog());
+            header("Location: " . $this->getPathViewError500());
             die();
         }
     }
@@ -83,8 +80,7 @@ class UserController
         $userData = $userRepository->checkLogin($email, $password);
 
         if (empty($userData)) {
-            header("Location: ../../view/user/login.php?notFound");
-            die();
+            exit(header("Location: " . $this->getPathViewLogin() . "?notFound"));
         }
 
         if ($userData['validated'] == false) {
@@ -102,11 +98,9 @@ class UserController
             $_SESSION['userId'] = $user->getId();
             $_SESSION['userValidated'] = $user->getValidated();
 
-            header("Location: ../../view/user/verification.php");
-            die();
+            exit(header("Location: " . $this->getPathViewVerification()));
         }
 
-        header("Location: ../view/main/index.php");
-        die();
+        header("Location: " . $this->getPathViewIndex());
     }
 }

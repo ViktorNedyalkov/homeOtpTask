@@ -1,9 +1,8 @@
 <?php
 require_once '../utility/autoloader.php';
 require_once '../utility/session_main.php';
-require_once __DIR__ . '/../utility/error_handler.php';
+require_once '../utility/error_handler.php';
 //Check if user is logged
-
 
 if (!empty($_POST['email']) &&
     !empty($_POST['password']))

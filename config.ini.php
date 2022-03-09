@@ -5,6 +5,6 @@
 APP_ENV=dev
 DATABASE_IP = localhost
 DATABASE_PORT = 3306
-DATABASE_USER = {username_here}
-DATABASE_PASSWORD = {password_here}
+DATABASE_USER = {db_user}
+DATABASE_PASSWORD = {db_password}
 DATABASE_NAME = 'otptask'

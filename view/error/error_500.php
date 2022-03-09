@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
     <head>
-        <title>MagBuy | ERROR 500</title>
+        <title>HomeOPTTask | ERROR 500</title>
     </head>
     <body>
         <div>

@@ -1,28 +1,28 @@
 <?php
 namespace controller\verification;
 
+use controller\AbstractController;
 use model\repository\UserRepository;
 use model\repository\VerificationRepository;
 use model\User;
 
-class VerificationController
+class VerificationController extends AbstractController
 {
     public function verifyUser(string $verificationCode)
     {
 
         // check if user is in the session
-//        var_dump($_SESSION);die();
+
         if (!isset($_SESSION['userId'])) {
-            header("Location: ../../view/user/login.php");
-            die();
+            exit(header("Location: " . $this->getPathViewLogin()));
+            
         }
         $userId = $_SESSION['userId'];
         $userRepository = new UserRepository();
         $userData = $userRepository->getUser($userId);
 
         if (empty($userData)) {
-            header("Location: ../../view/user/login.php");
-            die();
+            exit(header("Location: " . $this->getPathViewLogin()));
         }
 
         $user = new User(
@@ -40,8 +40,7 @@ class VerificationController
         $attempts = $validationRepository->verificationAttemptsInLastMinute($user);
 
         if ($attempts['attempts'] >= 3) {
-            header("Location: ../../view/user/verification.php?tooManyAttempts");
-            die();
+            exit(header("Location: ". $this->getPathViewVerification() . "?tooManyAttempts"));
         }
 
         $validationRepository->logUserVerificationAttempt($user);
@@ -51,8 +50,7 @@ class VerificationController
 
         $verificationCodeData = $validationRepository->getVerificationCode($user, $verificationCode);
         if (empty($verificationCodeData)) {
-            header("Location: ../../view/user/verification.php?wrongCode");
-            die();
+            exit(header("Location: " . $this->getPathViewVerification() . "?wrongCode"));
         }
 
         $userRepository->activateUser($user);
@@ -61,23 +59,20 @@ class VerificationController
         $_SESSION['userValidated'] = $user->getValidated();
 
         header('Location: ../../view/main/index.php');
-        die();
     }
 
     public function createNewVerification()
     {
         //get user id from session
         if (!isset($_SESSION['userId'])) {
-            header("Location: ../../view/user/login.php");
-            die();
+            exit(header("Location: " . $this->getPathViewLogin()));
         }
         $userId = $_SESSION['userId'];
         $userRepository = new UserRepository();
         $userData = $userRepository->getUser($userId);
 
         if (empty($userData)) {
-            header("Location: ../../view/user/login.php");
-            die();
+            exit(header("Location: " . $this->getPathViewLogin()));
         }
         $user = new User(
             $userData['email'],
@@ -94,14 +89,12 @@ class VerificationController
         $numberOfAttempts = $verificationRepository->getUserCodeResendAttempts($user);
 
         if (empty($numberOfAttempts) || $numberOfAttempts['attempts'] >= 1) {
-            header("Location: ../../view/user/verification.php?tooManyAttempts");
-            die();
+            exit(header("Location: ". $this->getPathViewVerification()."?tooManyAttempts"));
         }
 
         $verificationRepository->insertNewVerificationCode($user, $this->generateVerificationCode());
 
-        header("Location: ../../view/user/verification.php?newCode");
-        die();
+        header("Location: " . $this->getPathViewVerification() . "?newCode");
     }
 
     private function generateVerificationCode(): string
